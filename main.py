@@ -24,23 +24,11 @@ def index():
     blogs = Blog.query.all()
     return render_template('blog.html', blogs=blogs)
 
-#    if request.method == 'POST':
-#        task_name = request.form['task']
-#        new_task = Task(task_name)
-#        db.session.add(new_task)
-#        db.session.commit()
-
-#    blogs = Blog.query.all()
-#    completed_tasks = Task.query.filter_by(completed=True).all()
-#    return render_template('todos.html',title="Get It Done!", 
-#        tasks=tasks, completed_tasks=completed_tasks)
-
-
 @app.route('/newpost', methods=['POST', 'GET'])
 def add_blog():
     if request.method == 'POST':
-        newpost_name = request.form['np-title']
-        newpost_body = request.form['np-body']
+        newpost_name = str(request.form['np-title'])
+        newpost_body = str(request.form['np-body'])
         newpost = Blog(newpost_name,newpost_body)
         db.session.add(newpost)
         db.session.commit()
@@ -49,15 +37,12 @@ def add_blog():
 #        error = "Please specify the movie you want to add."
 #        return redirect("/?error=" + error)
 
-    return render_template('newpost.html', newpost=newpost)
+    return render_template('newpost.html')#, newpost=newpost)
 
 #    blog_id = int(request.form['blog-id'])
 #    blog_post = Blog.query.get(blog_id)
-#    task.completed = True
 #    db.session.add(task)
 #    db.session.commit()
 
-#    return redirect('/')
-
-#if __name__ == '__main__':
-app.run()
+if __name__ == '__main__':
+    app.run()
