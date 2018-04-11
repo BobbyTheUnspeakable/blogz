@@ -10,17 +10,15 @@
         <input type="submit" value='Add Task' />
     </form>-->
 
-    <hr />
-
     {% if blogs|length == 0 %}
     <p>No blogs yet</p>
     {% else %}
 
-        <ul>
-            {% for blog in blogs %}
-            <li>{{blog}}</li>
-            {% endfor %}
-        </ul>
+        {% for blog in blogs %}
+            <h3>{{blog.title}}</h3>
+            <p>{{blog.body}}</p>
+            <hr />
+        {% endfor %}
 
     {% endif %}
 {% endblock %}
