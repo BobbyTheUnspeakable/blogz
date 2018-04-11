@@ -38,19 +38,18 @@ def index():
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def add_blog():
-
-#    newpost_name = request.form['np-title']
-#    newpost_body = request.form['np-body']
+    if request.method == 'POST':
+        newpost_name = request.form['np-title']
+        newpost_body = request.form['np-body']
+        newpost = Blog(newpost_name,newpost_body)
+        db.session.add(newpost)
+        db.session.commit()
 
 #    if (not newpost_name) or (newpost_name.strip() == ""):
 #        error = "Please specify the movie you want to add."
 #        return redirect("/?error=" + error)
 
-#    newpost = Blog(newpost_name,newpost_body)
-#    db.session.add(newpost)
-#    db.session.commit()
-
-    return render_template('newpost.html')#, newpost=newpost)
+    return render_template('newpost.html', newpost=newpost)
 
 #    blog_id = int(request.form['blog-id'])
 #    blog_post = Blog.query.get(blog_id)
