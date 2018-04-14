@@ -2,15 +2,17 @@
 
 {% block content %}
     <h1>Add a Blog Entry</h1>
-    <form action='/blog' method='post'>
+    <form action='/newpost' method='post'>
         <label>
             Title for your new blog:
             <input type="text" name='np-title' />
+            <p class="error">{{title_error}}</p>
         </label>
         <br>
         <label>
             Your new blog:
             <input type="textbox" name='np-body'/>
+            <p class="error">{{body_error}}</p>
         </label>
         <br>
         <input type="submit" value='Add Entry' />

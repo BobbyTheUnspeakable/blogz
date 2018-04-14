@@ -18,6 +18,9 @@ class Blog(db.Model):
         self.title = title
         self.body = body
 
+    def __repr__(self):
+        return self.title
+
 
 @app.route('/blog', methods=['POST', 'GET'])
 def index():
@@ -27,17 +30,23 @@ def index():
 @app.route('/newpost', methods=['POST', 'GET'])
 def add_blog():
     if request.method == 'POST':
-        newpost_name = str(request.form['np-title'])
-        newpost_body = str(request.form['np-body'])
+        newpost_name = request.form['np-title']
+        newpost_body = request.form['np-body']
+        title_error = "Please specify the title of your post."
+        body_error = "Please add something to the body."
+        if newpost_name.strip() == "" and newpost_body.strip() == "":
+            return render_template("newpost.html", title_error=title_error, body_error=body_error)
+        if newpost_name.strip() == "":
+            return render_template("newpost.html", title_error=title_error)
+        if newpost_body.strip() == "":
+            return render_template("newpost.html", body_error=body_error)
+
         newpost = Blog(newpost_name,newpost_body)
         db.session.add(newpost)
         db.session.commit()
 
-#    if (not newpost_name) or (newpost_name.strip() == ""):
-#        error = "Please specify the movie you want to add."
-#        return redirect("/?error=" + error)
-
-    return render_template('newpost.html')#, newpost=newpost)
+        return redirect('/blog')#, newpost=newpost)
+    return render_template('newpost.html')
 
 #    blog_id = int(request.form['blog-id'])
 #    blog_post = Blog.query.get(blog_id)
