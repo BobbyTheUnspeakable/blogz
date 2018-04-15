@@ -25,15 +25,25 @@ class Blog(db.Model):
 @app.route('/blog', methods=['POST', 'GET'])
 def index():
     blogs = Blog.query.all()
-    #blog_id = request.args.get('blog-id')
+    blog_id = request.args.get('blog-id')
+    #if my get request has a query parameter:
+
+    #use the id in that query parameter to find the row with the matching id in the db
+    #Blog.query.filter_by(id=blog_id).all()
+
+    #render the template with the corresponding id's title and body
+    #return render_template('blog-post.html', blog_id=blog_id)
+    
+    #else:
+    #render the page with all blog entries
     return render_template('blog.html', blogs=blogs)#, blog_id=blog_id)
 
-@app.route('/blog-post')
-def blog_post():
+#@app.route('/blog-post')
+#def blog_post():
     #blog_id =  request.args.get(blog.id)
-    blog_post = Blog.query.filter_by(id=1).all()
+    #blog_post = Blog.query.filter_by(id=1).all()
     #blogs = Blog.query.all()
-    return render_template('blog-post.html', blog_post=blog_post)#, blog_post=blog_post)
+    #return render_template('blog-post.html')#, blog_post=blog_post)#, blog_post=blog_post)
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def add_blog():
