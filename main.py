@@ -25,18 +25,13 @@ class Blog(db.Model):
 @app.route('/blog', methods=['POST', 'GET'])
 def index():
     blogs = Blog.query.all()
-    blog_id = request.args.get('blog-id')
-    #if my get request has a query parameter:
+    blog_id = request.args.get('id')
 
-    #use the id in that query parameter to find the row with the matching id in the db
-    #Blog.query.filter_by(id=blog_id).all()
-
-    #render the template with the corresponding id's title and body
-    #return render_template('blog-post.html', blog_id=blog_id)
-    
-    #else:
-    #render the page with all blog entries
-    return render_template('blog.html', blogs=blogs)#, blog_id=blog_id)
+    if request.method == 'GET' and request.args.get('id'):
+        single_blog = Blog.query.filter_by(id=blog_id).first()
+        return render_template('blog-post.html', single_blog=single_blog)
+    else:
+        return render_template('blog.html', blogs=blogs)
 
 #@app.route('/blog-post')
 #def blog_post():
@@ -63,7 +58,10 @@ def add_blog():
         db.session.add(newpost)
         db.session.commit()
 
-        return redirect('/blog')
+        blog_id = request.args.get('id')
+        single_blog = Blog.query.filter_by(id=blog_id).first()
+        return render_template('blog-post.html', single_blog=single_blog)
+        #return redirect('/blog')
     return render_template('newpost.html')
 
 if __name__ == '__main__':
