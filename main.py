@@ -33,13 +33,6 @@ def index():
     else:
         return render_template('blog.html', blogs=blogs)
 
-#@app.route('/blog-post')
-#def blog_post():
-    #blog_id =  request.args.get(blog.id)
-    #blog_post = Blog.query.filter_by(id=1).all()
-    #blogs = Blog.query.all()
-    #return render_template('blog-post.html')#, blog_post=blog_post)#, blog_post=blog_post)
-
 @app.route('/newpost', methods=['POST', 'GET'])
 def add_blog():
     if request.method == 'POST':
@@ -58,10 +51,10 @@ def add_blog():
         db.session.add(newpost)
         db.session.commit()
 
-        blog_id = request.args.get('id')
-        single_blog = Blog.query.filter_by(id=blog_id).first()
-        return render_template('blog-post.html', single_blog=single_blog)
-        #return redirect('/blog')
+        blog_id = newpost.id
+        blog_id = str(blog_id)
+        return redirect('/blog?id=' + blog_id)
+        
     return render_template('newpost.html')
 
 if __name__ == '__main__':
