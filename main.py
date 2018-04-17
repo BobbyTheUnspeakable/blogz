@@ -113,7 +113,25 @@ def signup():
             return render_template("signup.html", user_error=user_error)
 
     return render_template('signup.html')
-#@app.route('/login')
+
+@app.route('/login', methods=['POST','GET'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        username_error = "Invalid username"
+        password_error = "Invalid password"
+        user = User.query.filter_by(username=username).first()
+        if user and user.password == password:
+            session['username'] = username
+            return redirect('/newpost')
+        if not user:
+            return render_template("login.html", username_error=username_error)
+        if user.password != password:
+            return render_template("login.html",password_error=password_error)
+
+    return render_template('login.html')
+
 #@app.route('/index')
 #@app.route('/logout')
 
