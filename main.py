@@ -69,14 +69,36 @@ def add_blog():
         
     return render_template('newpost.html')
 
+#This is a helper function for the validation process
+def validate(string):
+    if len(string) < 3 or len(string) > 20:
+        return False
+    else:
+        return True
+
 @app.route('/signup', methods=['POST','GET'])
 def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         verify = request.form['verify']
+        user_error = "That's not a valid username."
+        pw_error = "That's not a valid password."
+        vpw_error = "Passwords do not match."
 
-        #TODO validate user data
+        #Validates username based on length and illegal characters
+        if validate(username) == False:
+            return render_template("signup.html", user_error = user_error)
+        if username.isalnum() == False:
+            return render_template("signup.html", user_error = user_error)
+        #Validates password based on length and illegal characters
+        if validate(password) == False:
+            return render_template("signup.html", pw_error = pw_error, username = username)
+        if password.isalnum() == False:
+            return render_template("signup.html", pw_error = pw_error, username = username)
+        #Validates to make sure both password fields match
+        if verify != password:
+            return render_template("signup.html", vpw_error = vpw_error, username = username)
 
         #Checks to see the username is already in use
         existing_user = User.query.filter_by(username=username).first()
@@ -87,9 +109,8 @@ def signup():
             session['username'] = username
             return redirect('/newpost')
         else:
-            #TODO better response message
-            return '<h1>YOU ALREADY EXIST</h1>'
-
+            user_error = "That username is already in use."
+            return render_template("signup.html", user_error=user_error)
 
     return render_template('signup.html')
 #@app.route('/login')
