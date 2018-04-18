@@ -16,10 +16,11 @@ class Blog(db.Model):
     body = db.Column(db.String(500))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, title, body, owner):
+    #TODO figure out how to put the owner id in the constructor
+    def __init__(self, title, body):#, owner):
         self.title = title
         self.body = body
-        self.owner = owner
+        #self.owner = owner
 
     def __repr__(self):
         return self.title
@@ -28,14 +29,20 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100))
     password = db.Column(db.String(100))
-    blogs = db.relationship('Blog', backref='owner ')
+    blogs = db.relationship('Blog', backref='owner')
 
     def __init__(self,username,password):
         self.username = username
         self.password = password
 
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'list_blogs', 'index', 'signup']
+    if request.endpoint not in allowed_routes and 'username' not in session:
+        return redirect('/login')
+
 @app.route('/blog', methods=['POST', 'GET'])
-def index():
+def list_blogs():
     blogs = Blog.query.all()
     blog_id = request.args.get('id')
 
@@ -50,6 +57,8 @@ def add_blog():
     if request.method == 'POST':
         newpost_name = request.form['np-title']
         newpost_body = request.form['np-body']
+        #owner = User.query.filter_by(username=session['username']).first()
+        #owner = user.id
         title_error = "Please specify the title of your post."
         body_error = "Please add something to the body."
         if newpost_name.strip() == "" and newpost_body.strip() == "":
@@ -59,7 +68,8 @@ def add_blog():
         if newpost_body.strip() == "":
             return render_template("newpost.html", body_error=body_error)
 
-        newpost = Blog(newpost_name,newpost_body)
+        #TODO figure out how to grab the owner id and put it into the constructor
+        newpost = Blog(newpost_name,newpost_body)#,user.id,owner)
         db.session.add(newpost)
         db.session.commit()
 
@@ -137,8 +147,16 @@ def logout():
     del session['username']
     return redirect('/blog')
 
+@app.route('/')
+def index():
+    users = User.query.all()
+    #blog_id = request.args.get('id')
 
-#@app.route('/index')
+    #if request.method == 'GET' and request.args.get('id'):
+    #    single_blog = Blog.query.filter_by(id=blog_id).first()
+    #    return render_template('blog-post.html', single_blog=single_blog)
+    #else:
+    return render_template('index.html', users=users)
 
 
 if __name__ == '__main__':
