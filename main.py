@@ -16,11 +16,10 @@ class Blog(db.Model):
     body = db.Column(db.String(500))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    #TODO figure out how to put the owner id in the constructor
-    def __init__(self, title, body):#, owner):
+    def __init__(self, title, body, owner):
         self.title = title
         self.body = body
-        #self.owner = owner
+        self.owner = owner
 
     def __repr__(self):
         return self.title
@@ -57,8 +56,7 @@ def add_blog():
     if request.method == 'POST':
         newpost_name = request.form['np-title']
         newpost_body = request.form['np-body']
-        #owner = User.query.filter_by(username=session['username']).first()
-        #owner = user.id
+        owner = User.query.filter_by(username=session['username']).first()
         title_error = "Please specify the title of your post."
         body_error = "Please add something to the body."
         if newpost_name.strip() == "" and newpost_body.strip() == "":
@@ -68,8 +66,7 @@ def add_blog():
         if newpost_body.strip() == "":
             return render_template("newpost.html", body_error=body_error)
 
-        #TODO figure out how to grab the owner id and put it into the constructor
-        newpost = Blog(newpost_name,newpost_body)#,user.id,owner)
+        newpost = Blog(newpost_name,newpost_body,owner)
         db.session.add(newpost)
         db.session.commit()
 
