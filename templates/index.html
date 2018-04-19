@@ -4,10 +4,7 @@
 <h1>Here Be Authors!</h1>
 
     {% for user in users %}
-    <h3>{{user.username}}</h3>
-
-        <hr />
+    <h3><a href='/blog?user={{user.id}}'>{{user.username}}</a></h3>
+    <hr />
     {% endfor %}
 {% endblock %}
-        <!--<a href='/blog?id={{blog.id}}'></a>-->
-        <!--<p>{{blog.body}}</p>-->
