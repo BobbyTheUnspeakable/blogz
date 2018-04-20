@@ -44,12 +44,12 @@ def require_login():
 def list_blogs():
     blogs = Blog.query.all()
     blog_id = request.args.get('id')
-    #TODO Add the posts author to the entries, and make the author a link
-    #Said link goes to this page with the query parameter "/blog?user=userid"
-    #Build the template for singleUser.html
-    #TODO In order to get the author into the template I think I have to
-    #Make a query to the User table and then make a sort of SQL query
-    #SELECT username FROM User JOIN Blog WHERE user.id = blog.owner_id 
+    user_id = request.args.get('user')
+
+    if request.method == 'GET' and request.args.get('user'):
+        single_user = Blog.query.filter_by(owner_id=user_id).all()
+        return render_template('singleUser.html', single_user=single_user)
+
     if request.method == 'GET' and request.args.get('id'):
         single_blog = Blog.query.filter_by(id=blog_id).first()
         return render_template('blog-post.html', single_blog=single_blog)
@@ -152,15 +152,6 @@ def logout():
 @app.route('/')
 def index():
     users = User.query.all()
-    #TODO turn all the authors into links
-    #All the links will point to the "/blog?user=userid"
-
-    #blog_id = request.args.get('id')
-
-    #if request.method == 'GET' and request.args.get('id'):
-    #    single_blog = Blog.query.filter_by(id=blog_id).first()
-    #    return render_template('blog-post.html', single_blog=single_blog)
-    #else:
     return render_template('index.html', users=users)
 
 
